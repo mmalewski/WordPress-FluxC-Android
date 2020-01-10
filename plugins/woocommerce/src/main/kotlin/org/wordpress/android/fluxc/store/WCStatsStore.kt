@@ -468,7 +468,7 @@ class WCStatsStore @Inject constructor(
         wcOrderStatsClient.fetchVisitorStats(
                 payload.site,
                 apiUnit,
-                getFormattedDateByOrderStatsApiUnit(payload.site, apiUnit, payload.endDate),
+                getFormattedDateByOrderStatsApiUnit(payload.site, getVisitorStatsApiUnit(apiUnit), payload.endDate),
                 quantity,
                 payload.forced,
                 payload.startDate,
@@ -490,7 +490,7 @@ class WCStatsStore @Inject constructor(
                 payload.site,
                 apiUnit,
                 payload.granularity,
-                getFormattedDateByOrderStatsApiUnit(payload.site, apiUnit, endDate),
+                getFormattedDateByOrderStatsApiUnit(payload.site, getVisitorStatsApiUnit(apiUnit), endDate),
                 quantity,
                 payload.forced,
                 startDate,
@@ -507,6 +507,17 @@ class WCStatsStore @Inject constructor(
                 payload.forced
         )
     }
+
+    /**
+     * The visitor Stats endpoint returns incorrect stats if the endDate passed to the endpoint
+     * is not in the format YYYY-MM-DD.
+     *
+     * As a workaround, regardless of the  [OrderStatsApiUnit] or [StatsGranularity]
+     * passed, only when formatting the date, we would need to set the [OrderStatsApiUnit]
+     * to [OrderStatsApiUnit.DAY]
+     */
+    private fun getVisitorStatsApiUnit(apiUnit: OrderStatsApiUnit) =
+     if (apiUnit == OrderStatsApiUnit.MONTH) OrderStatsApiUnit.DAY else apiUnit
 
     private fun handleFetchOrderStatsCompleted(payload: FetchOrderStatsResponsePayload) {
         val onStatsChanged = with(payload) {
