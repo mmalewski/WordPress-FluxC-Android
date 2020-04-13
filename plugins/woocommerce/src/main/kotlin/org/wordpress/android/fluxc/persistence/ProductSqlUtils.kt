@@ -180,8 +180,8 @@ object ProductSqlUtils {
     private fun compareProductNames(name1: String, name2: String): Int {
         val compare = name1.compareTo(name2)
         if (compare < 0) {
-            if (Character.isLetterOrDigit(name1[0])) {
-                if (!Character.isLetterOrDigit(name2[0])) {
+            if (!Character.isLetterOrDigit(name1[0])) {
+                if (Character.isLetterOrDigit(name2[0])) {
                     return -compare
                 }
             }
